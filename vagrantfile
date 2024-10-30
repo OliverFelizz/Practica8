@@ -1,0 +1,23 @@
+Vagrant.configure("2") do |config|
+    # Especifica la box (imagen base) que se va a usar
+    config.vm.box = "ubuntu/jammy64"
+  
+    # Configurar la cantidad de CPU y memoria RAM
+    config.vm.provider "virtualbox" do |vb|
+      vb.cpus = 1
+      vb.memory = 512
+    end
+  
+    # Provisión para instalar Apache
+    config.vm.provision "shell", inline: <<-SHELL
+      sudo apt-get update
+      sudo apt-get install -y apache2
+    SHELL
+  
+    # Configurar la sincronización del directorio local con el directorio de Apache
+    config.vm.synced_folder "src", "/var/www/html", type: "virtualbox"
+    
+    # Opcional: Redirigir el puerto 80 del invitado al puerto 8080 del host
+    config.vm.network "forwarded_port", guest: 80, host: 8080
+  end
+  
